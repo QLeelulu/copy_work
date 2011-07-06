@@ -1,5 +1,7 @@
 
-<?js if(it.vd.comments && it.vd.comments.length){ ?>
+<?js if(it.vd.comments && it.vd.comments.length){ 
+	 var urlHelper = it.Helper('urlHelper');
+?>
 <ul>
 	<?js for(var i=0, l=it.vd.comments.length; i<l; i++){ 
 		 	var comment = it.vd.comments[i];
@@ -8,7 +10,7 @@
 		<div class="info">##{i+1}楼: <a href="###">${comment.user.name}</a> 
 			发表于 #{comment.created_at.format('yyyy-MM-dd hh:mm:ss')}
 		</div>
-		<div class="cont">#{comment.content}</div>
+		<div class="cont">#{urlHelper.desTextToHtml(comment.content)}</div>
 	</li>
 	<?js } ?>
 </ul>	
