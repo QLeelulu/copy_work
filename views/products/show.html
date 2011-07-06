@@ -1,0 +1,164 @@
+{# ../header.html #}
+
+<?js
+    var urlHelper = it.Helper('urlHelper'),
+	    product = it.vd.product;
+?>
+    <link rel="stylesheet" type="text/css" href="/static/css/facebox.css" media="screen" /> 
+    <div class="product_detail">
+        
+        <div class="original">
+        	<img class="arrow" src="/static/images/layerArrow.gif" />
+			<h6>创新产品</h6>
+        	<h3 class="title">
+	            <a target="_blank" href="#{product.home_url}">
+	                <img class="fico" src="http://www.google.com/s2/favicons?domain=${urlHelper.getDomain(product.home_url)}" />
+	                ${product.title}
+	            </a>
+	        </h3>
+			<p>
+        	    <label>网址:</label> <a href="${product.home_url}" target="_blank">${product.home_url}</a> <br/>
+			</p>
+			<P>
+        	    <label>生于:</label> #{product.online_at.getFullYear()}年-#{product.online_at.getMonth()+1}月 <br/>
+			</p>
+			<p>
+			    <label>简介:</label> 
+				<?js if(product.des && product.des.length>140){ ?>
+				${product.des.slice(0, 140)}<span class="hide">${product.des.slice(140)}</span><a href="javascript:">... 详细&gt;&gt; </a>
+				<?js }else{ ?>
+				${product.des}
+				<?js } ?>
+			</p>
+			<?js if(product.pics && product.pics.length){ ?>
+			<div class="pics">
+				<?js for(var i=0; i<product.pics.length; i++){ ?>
+				<a href="${product.pics[i]}"><img src="${product.pics[i]}"/></a>
+				<?js } ?>
+			</div>
+			<?js } ?>
+			<p>
+				<br/>
+				&gt;&gt;<a href="/products/add_copy/#{product._id}#addCopyWork" style="color:red;"><img src="/static/images/lightbulb_add.png"/>山寨他</a>&lt;&lt;
+			</p>
+        </div>
+		<div class="copys">
+			<h6>山寨+微创新</h6>
+			<div class="wrap">
+			<?js if(product.copys){ ?>
+	        <ul>
+	            <?js for(var i=0, l=product.copys.length; i<l; i++){
+	                 var copy = product.copys[i];
+	            ?>
+	            <li <?js if(i==l-1){ ?>class="last"<?js } ?>>
+	            	<p class="title">
+	                <img class="fico" src="http://www.google.com/s2/favicons?domain=#{urlHelper.getDomain(copy.home_url)}" />
+	                <a href="${copy.home_url}" target="_blank">${copy.title}</a>
+					</p>
+					<p>
+		        	    <label>网址:</label> <a href="${copy.home_url}" target="_blank">${copy.home_url}</a> <br/>
+					</p>
+					<p>
+						<label>生于:</label> #{copy.online_at.getFullYear()}年-#{product.online_at.getMonth()+1}月
+					</p>
+					<p>
+						<label>简介:</label> 
+						<?js if(copy.des && copy.des.length>140){ ?>
+		                ${copy.des.slice(0, 140)}<span class="hide">${copy.des.slice(140)}</span><a href="javascript:">... 详细&gt;&gt; </a>
+		                <?js }else{ ?>
+		                ${copy.des}
+		                <?js } ?>
+					</p>
+					<?js if(copy.pics && copy.pics.length){ ?>
+		            <div class="pics">
+		                <?js for(var j=0; j<copy.pics.length; j++){ ?>
+		                <a href="${copy.pics[j]}"><img src="${copy.pics[j]}"/></a>
+		                <?js } ?>
+		            </div>
+		            <?js } ?>
+	            </li>
+	            <?js } ?>
+	        </ul>
+	        <?js }else{ ?>
+			<div class="info">我聪明的朋友，这么好的产品居然还没有被山寨，就如一款伟大的产品没有被GFW一样失落啊，
+			     <a href="/products/add_copy/#{product._id}">快快来山寨吧</a>！
+			</div>
+			<?js } ?>
+			</div>
+		</div>
+    </div>
+	
+	<script type="text/javascript" src="/static/js/facebox.js"></script>
+	<script type="text/javascript">
+		jQuery(document).ready(function($) {
+		    $('.product_detail .pics a').facebox() 
+		});
+	</script>
+	
+	<div class="clear"></div>
+	<hr/>
+	<div id="comments">
+		<div id="comment_list">
+			<img src="/static/images/loading.gif" />
+		</div>
+		<h3 class="title">添加评论</h3>
+		<?js if(it.req.user){ ?>
+        <form id="addCommentForm" class="simple_form" onsubmit="return false;">
+            <div id="showMsg"></div>
+            <ul>
+                <li><label for="txtComment">评论内容:</label><textarea id="txtComment" ></textarea></li>
+                <li><button type="submit" id="btnAddComment" class="minibutton green submit">添 加 评 论</button></li>
+            <ul>
+        </form>
+        
+        <script type="text/javascript">
+        	function getComments(){
+				$.ajax({
+					url:'/products/comments?product_id=#{product._id}',
+					type: 'get',
+					success:function(html, textStatus){
+						$("#comment_list").html(html);
+					},
+					error:function(){
+						$("#comment_list").html('载入评论出错');
+					}
+				});
+			};
+			
+            $(document).ready(function(){
+				getComments();
+				
+                $("#btnAddComment").click(function(){
+                    var postData = {};
+					postData.content = $.trim( $("#txtComment").val() );
+					if(!postData.content){
+						alert('请输入评论内容');
+						return;
+					}
+					postData.product_id = '#{product._id}';
+                    $.post('/products/comment', postData, function(r){
+                        if(r.success){
+                            $("#showMsg").html('评论成功');
+                            $("#txtComment").val('');
+                        }else{
+                            var err = r.error;
+                            if(typeof err !== 'string'){
+                                err = '';
+                                for(var k in r.error){
+                                    err += r.error[k] + '\r\n';
+                                }
+                            }
+                            alert(err);
+                        }
+                    });
+				});
+            });
+        </script>
+		
+		<?js }else{ ?>
+		<div>
+			<a href="/user/login" class="minibutton green">请先登录才能进行评论</a>
+		</div>
+		<?js } ?>
+	</div>
+{# ../footer.html #}

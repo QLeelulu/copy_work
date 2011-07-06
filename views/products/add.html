@@ -1,0 +1,67 @@
+{# ../header.html #}
+        <link rel="stylesheet" type="text/css" href="/static/css/tooltip.css" media="screen" />
+        <h3 class="title">提交创新产品</h3>
+        <form id="addForm" class="simple_form" onsubmit="return false;">
+            <div id="showMsg"></div>
+            <ul>
+                <li><label for="title">名称:</label><input type="text" name="title" reg="^.{2,}$" tip="产品的名称" /></li>
+                <li><label for="home_url">网址:</label><input type="text" name="home_url" value="http://" tip="产品的网址" reg="^((https|http|ftp|rtsp|mms)?://)?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?(([0-9]{1,3}.){3}[0-9]{1,3}|([0-9a-z_!~*'()-]+.)*([0-9a-z][0-9a-z-]{0,61})?[0-9a-z].[a-z]{2,6})(:[0-9]{1,4})?((/?)|(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$" /></li>
+                <li>
+				    <label for="online_at">上线时间:</label>
+                    <select id="oYear">
+                    <?js for(var i=(new Date()).getFullYear(), l=1970; i>=l; i--){ ?>
+                       <option value="#{i}">#{i}</option>
+                    <?js } ?>
+                    </select>年
+                    <select id="oMonth">
+                    <?js for(var i=1; i<13; i++){ ?>
+                       <option value="#{i}">#{i}</option>
+                    <?js } ?>
+                    </select>月
+				</li>
+				<li>
+					<label for="category">所属分类:</label>
+					<select name="category">
+						<option value="internet">互联网产品</option>
+						<option value="daily">日常产品</option>
+						<option value="other">其他产品</option>
+					</select>
+				</li>
+                <li><label for="des">介绍:</label><textarea name="des" reg="^.{6,}$" tip="产品的介绍" ></textarea></li>
+				<li><label for="pics">图片:(不支持图片上传，请用外链，每行一个图片url)</label><textarea name="pics" tip="产品的相关图片。不支持图片上传，请贴图片URL，每行一个URL" ></textarea></li>
+                <li><button type="submit" id="btnAdd" class="minibutton green submit">添 加</button></li>
+            <ul>
+        </form>
+        
+        <script type="text/javascript" src="/static/js/tooltip.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                var ttCheck = $('#addForm input[tip], #addForm input[reg]').tooltip();
+                $("#btnAdd").click(function(){
+                    if(ttCheck.check()){
+                        var postData = {};
+                        $("#addForm :text, #addForm :password, #addForm textarea").each(function(){
+                            postData[$(this).attr('name')] = $(this).val();
+                        });
+						postData['online_at'] = $("#oYear").val() + '-' + $("#oMonth").val();
+                        $.post('/products/add', postData, function(r){
+                            if(r.success){
+                                $("#showMsg").html('提交成功，正在跳转到产品页面..');
+                                document.location.href = '/products/show/' + r.product._id;
+                            }else{
+                                var err = r.error;
+                                if(typeof err !== 'string'){
+                                    err = '';
+                                    for(var k in r.error){
+                                        err += r.error[k] + '\r\n';
+                                    }
+                                }
+                                alert(err);
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
+
+{# ../footer.html #}

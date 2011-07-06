@@ -1,0 +1,23 @@
+.simple_form li{
+	margin: 5px 0 10px 0;
+}
+
+.simple_form label{
+	font-size: 14px;
+	color: #333;
+	display: block;
+}
+
+.simple_form textarea{
+	width:500px;
+	height:100px;
+}
+
+.simple_form .inp{
+	width: 250px;
+}
+
+.simple_form .submit{
+	padding:8px 20px;
+	font-size:14px;
+}

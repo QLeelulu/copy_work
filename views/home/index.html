@@ -1,0 +1,63 @@
+{# ../header.html #}
+
+
+<?js if(it.vd.products && it.vd.products.length){ 
+     var urlHelper = it.Helper('urlHelper');
+?>
+<ul id="product_list" class="product_list">
+	<?js for(var i=0, l=it.vd.products.length; i<l; i++){
+         var product = it.vd.products[i];
+    ?>
+    <li class="item">
+        <div class="original">
+			<a class="title" href="/products/show/#{product._id}" >
+				<img class="fico" src="http://www.google.com/s2/favicons?domain=#{urlHelper.getDomain(product.home_url)}" />
+				${product.title}
+			</a>
+			<div class="btns">
+				<!-- <a href="/products/show/#{product._id}"><img src="/static/images/eye.png"/>详情</a> -->
+				<a href="/products/show/#{product._id}#comments"><img src="/static/images/comment.png"/>(${product.comment_count||0})评论</a>
+				<a href="/products/add_copy/#{product._id}#addCopyWork"><img src="/static/images/lightbulb_add.png"/>山寨他</a>
+			</div>
+		</div>
+		
+		
+		<ul class="copys">
+		<?js if(product.copys){ ?>
+			<?js for(var j=0, l2=product.copys.length; j<l2; j++){
+		         var copy = product.copys[j];
+		    ?>
+			<li>
+			    |<br/>
+				|---
+			    <img class="fico" src="http://www.google.com/s2/favicons?domain=#{urlHelper.getDomain(copy.home_url)}" />
+				<span class="title">${copy.title}</span>
+                <!-- <a href="#{copy.home_url}" target="_blank">${copy.title}</a> -->
+			</li>
+			<?js } ?>
+		<?js }else{ ?>
+            <li>
+                |<br/>
+                |---等你来山寨
+			</li>
+        <?js } ?>
+		</ul>
+		
+    </li>
+    <?js } ?>
+	
+</ul>
+<?js } ?>
+
+<script type="text/javascript" src="/static/js/jquery.masonry.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#product_list').masonry({
+		    // options
+		    itemSelector : '.item',
+		    columnWidth : 240
+	    });
+	});
+</script>
+
+{# ../footer.html #}
