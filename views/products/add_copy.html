@@ -131,8 +131,10 @@
                 $("#btnAdd").click(function(){
                     if(ttCheck.check()){
                         var postData = {};
-                        $("#addForm :text, #addForm :password, #addForm textarea").each(function(){
-                            postData[$(this).attr('name')] = $(this).val();
+                        $("#addForm :text, #addForm :password, #addForm select, #addForm textarea").each(function(){
+							if ($(this).attr('name')) {
+								postData[$(this).attr('name')] = $(this).val();
+							}
                         });
 						postData['product_id'] = $("#prodoct_id").val();
 						postData['online_at'] = $("#oYear").val() + '-' + $("#oMonth").val();

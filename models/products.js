@@ -37,6 +37,30 @@ db.bind(collectionName, {
             fn && fn(err, products);
         });
     }
+    /************
+     * 获取指定分类下的产品列表
+     */
+  , getProductsByCategory: function(category, page, pagesize, fn){
+        var pagesize = Number(pagesize),
+            page = Number(page);
+        page = (isNaN(page) || page < 1) ? 1 : page;
+        pagesize = (isNaN(pagesize) || pagesize < 5) ? 5 : pagesize;
+        this.find({'category':category.toLowerCase()}).skip((page-1)*pagesize).limit(pagesize).sort('online_at', -1).toArray(function(err, products){
+            fn && fn(err, products);
+        });
+    }
+    /************
+     * 获取指定分类下的产品列表
+     */
+  , getNoCopyProducts: function(page, pagesize, fn){
+        var pagesize = Number(pagesize),
+            page = Number(page);
+        page = (isNaN(page) || page < 1) ? 1 : page;
+        pagesize = (isNaN(pagesize) || pagesize < 5) ? 5 : pagesize;
+        this.find({$or:[ {'copys' : { $size: 1 }}, {'copys':{$exists : false}} ] }).skip((page-1)*pagesize).limit(pagesize).sort('online_at', -1).toArray(function(err, products){
+            fn && fn(err, products);
+        });
+    }
   , /************
      * 获取正在出售的商品列表
      */

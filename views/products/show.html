@@ -25,9 +25,11 @@
 			<p>
 			    <label>简介:</label> 
 				<?js if(product.des && product.des.length>140){ ?>
-				${product.des.slice(0, 140)}<span class="hide">${product.des.slice(140)}</span><a href="javascript:">... 详细&gt;&gt; </a>
+				<span class="cut">${product.des.slice(0, 140)}</span>
+				<span class="hide">#{urlHelper.desTextToHtml(product.des)}</span>
+				<a class="show_des_detail" href="javascript:">... 详细&gt;&gt; </a>
 				<?js }else{ ?>
-				${product.des}
+				#{urlHelper.desTextToHtml(product.des)}
 				<?js } ?>
 			</p>
 			<?js if(product.pics && product.pics.length){ ?>
@@ -64,9 +66,11 @@
 					<p>
 						<label>简介:</label> 
 						<?js if(copy.des && copy.des.length>140){ ?>
-		                ${copy.des.slice(0, 140)}<span class="hide">${copy.des.slice(140)}</span><a href="javascript:">... 详细&gt;&gt; </a>
+		                <span class="cut">${copy.des.slice(0, 140)}</span>
+						<span class="hide">#{urlHelper.desTextToHtml(copy.des)}</span>
+						<a class="show_des_detail" href="javascript:">... 详细&gt;&gt; </a>
 		                <?js }else{ ?>
-		                ${copy.des}
+		                #{urlHelper.desTextToHtml(copy.des)}
 		                <?js } ?>
 					</p>
 					<?js if(copy.pics && copy.pics.length){ ?>
@@ -91,7 +95,20 @@
 	<script type="text/javascript" src="/static/js/facebox.js"></script>
 	<script type="text/javascript">
 		jQuery(document).ready(function($) {
-		    $('.product_detail .pics a').facebox() 
+		    $('.product_detail .pics a').facebox();
+			
+			$(".show_des_detail").click(function(){
+				var _t = $(this);
+				if(_t.html().indexOf('隐藏')>-1){
+					_t.parent().find('.hide').hide();
+					_t.parent().find('.cut').show();
+					_t.html('... 详细&gt;&gt;');
+				}else{
+					_t.parent().find('.cut').hide();
+					_t.parent().find('.hide').show();
+					_t.html('&lt;&lt隐藏详细介绍');
+				}
+			});
 		});
 	</script>
 	

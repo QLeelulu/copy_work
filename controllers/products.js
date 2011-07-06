@@ -48,6 +48,9 @@ exports.add_post = function(fnNext){
         product.online_at = new Date(product.online_at);
     }
     product.add_by = _t.req.user;
+    if(product.category){
+    	product.category = product.category.toLowerCase();
+    }
     // 图片
     if(product.pics){
         console.log(product.pics)
