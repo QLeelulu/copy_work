@@ -39,6 +39,26 @@ var bindToBlog = {
   }
 };
 
+console.log('======== test MongoSkin.router ========');
+var testdb1 = mongo.db('localhost/test1');
+var testdb2 = mongo.db('localhost/test2');
+var router = mongo.router(function(name){
+    switch(name){
+    case 'user':
+    case 'message':
+      return testdb1;
+    default:
+      return testdb2;
+    }
+});
+assert.equal(router.collection('user'), testdb1.collection('user'), 'user should router to testdb1');
+assert.equal(router.collection('message'), testdb1.collection('message'), 'message should router to testdb1');
+assert.equal(router.collection('others'), testdb2.collection('others'), 'others should router to testdb2');
+router.bind('user');
+router.bind('others');
+assert.equal(router.user, testdb1.user, 'user property should router to testdb1');
+assert.equal(router.others, testdb2.others, 'user property should router to testdb1');
+
 console.log('======== test MongoSkin.bind ========');
 mongo.bind('blog', bindToBlog);
 mongo.bind('users');
@@ -123,6 +143,13 @@ collection.insert([{a:1},{a:2},{a:3},{a:4}], function(err, replies){
     console.log('======== test SkinCollection.findById ========');
     collection.findById(replies[0]._id.toString(), function(err, item){
         assert.equal(item.a, 1);
+        console.log('======== test SkinCollection.removeById ========');
+        collection.removeById(replies[0]._id.toString(), function(err, reply){
+            assert.ok(reply, err && err.stack);
+            collection.findById(replies[0]._id.toString(), function(err, item){
+                assert.ok(!item);
+            });
+        });
     });
 });
 

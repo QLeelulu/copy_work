@@ -94,7 +94,22 @@
 	
 	<script type="text/javascript" src="/static/js/facebox.js"></script>
 	<script type="text/javascript">
+		function getComments(){
+			$.ajax({
+				url:'/products/comments?product_id=#{product._id}',
+				type: 'get',
+				success:function(html, textStatus){
+					$("#comment_list").html(html);
+				},
+				error:function(){
+					$("#comment_list").html('载入评论出错');
+				}
+			});
+		};
+			
 		jQuery(document).ready(function($) {
+			getComments();
+			
 		    $('.product_detail .pics a').facebox();
 			
 			$(".show_des_detail").click(function(){
@@ -129,21 +144,7 @@
         </form>
         
         <script type="text/javascript">
-        	function getComments(){
-				$.ajax({
-					url:'/products/comments?product_id=#{product._id}',
-					type: 'get',
-					success:function(html, textStatus){
-						$("#comment_list").html(html);
-					},
-					error:function(){
-						$("#comment_list").html('载入评论出错');
-					}
-				});
-			};
-			
             $(document).ready(function(){
-				getComments();
 				
                 $("#btnAddComment").click(function(){
                     var postData = {};

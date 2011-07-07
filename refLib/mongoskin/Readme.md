@@ -13,6 +13,14 @@
     * [SkinServer](#skinserver)
     * [SkinDb](#skindb)
     * [SkinCollection](#skincollection)
+      * [Additional methods](#additional-collection-op)
+      * [Collection operation](#inherit-collection-op)
+      * [Indexes](#inherit-indexes)
+      * [Querying](#inherit-query)
+      * [Aggregation](#inherit-aggregation)
+      * [Inserting](#inherit-inserting)
+      * [Updating](#inherit-updating)
+      * [Removing](#inherit-removing)
     * [SkinCursor](#skincursor)
 
 <a name='comparation'>
@@ -24,7 +32,7 @@ node-mongodb-native
 --------
 
 Powerful, most of drivers include mongoskin build upon it,
-  but node-mongodb-native has awkward syntax, too many callback,
+  but node-mongodb-native has awkward syntax, too many callbacks,
   and we need a way to hold Collection instance as Model for MVC.
 
 mongoose
@@ -69,7 +77,7 @@ Quick Start
 
  **Is mongoskin synchronized?**
 
-Nop! It is asynchronized, it use [future](http://en.wikipedia.org/wiki/Future_%28programming%29).
+Nope! It is asynchronized, it use the [future pattern](http://en.wikipedia.org/wiki/Future_%28programming%29).
 **Mongoskin** is the future layer above [node-mongodb-native](https://github.com/christkv/node-mongodb-native)
 
 <a name='quickstart-1'></a>
@@ -88,7 +96,7 @@ You can connect to mongodb easier now.
 Server options and BSON options
 --------
 You can also set `auto_reconnect` options querystring.
-And native_parser options will automatically set from wheather native_parser avariable.
+And native_parser options will automatically set if native_parser is avariable.
 
     var mongo = require('mongoskin'),
         db = mongo.db('localhost:27017/test?auto_reconnect');
@@ -201,6 +209,26 @@ Create [SkinServer](#skinserver) of native [ServerCluster](https://github.com/ch
 
 Create [SkinServer](#skinserver) of native [ServerPair](https://github.com/christkv/node-mongodb-native/blob/master/lib/mongodb/connection.js#L190)
 
+### router(select)
+
+select is function(collectionName) returns a database instance, means router collectionName to that database.
+
+    var db = mongo.router(function(coll_name){
+        switch(coll_name) {
+        case 'user':
+        case 'message':
+          return mongo.db('192.168.1.3/auth_db');
+        default:
+          return mongo.db('192.168.1.2/app_db');
+        }
+    });
+    db.bind('user', require('./shared-user-methods'));
+    var users = db.user; //auth_db.user
+    var messages = db.collection('message'); // auth_db.message
+    var products = db.collection('product'); //app_db.product
+
+
+
 [Back to index](#index)
 
 <a name='skinserver'>
@@ -270,6 +298,9 @@ See [Db](https://github.com/christkv/node-mongodb-native/blob/master/lib/mongodb
 SkinCollection
 --------
 
+See [Collection](https://github.com/christkv/node-mongodb-native/blob/master/lib/mongodb/collection.js#L45) of node-mongodb-native for more information.
+
+<a name='additional-collection-op'>
 ### open(callback)
 
 Retrieval native
@@ -280,11 +311,35 @@ instance, callback is function(err, collection).
 
 Equivalent to
 
-    db.bson_serilizer.ObjectID.createFromHexString(hex);
+    db.bson_serializer.ObjectID.createFromHexString(hex);
 
 See [ObjectID.createFromHexString](https://github.com/christkv/node-mongodb-native/blob/master/lib/mongodb/bson/bson.js#L548)
 
-### findItems(..., callback)
+
+<a name='inherit-collection-op'>
+
+### Collection operation
+
+    checkCollectionName(collectionName)
+    options(callback)
+    rename(collectionName, callback)
+    drop(callback)
+
+<a name='inherit-indexes'>
+
+### Indexes
+
+    createIndex (fieldOrSpec, unique, callback)
+    ensureIndex (fieldOrSpec, unique, callback)
+    indexInformation (callback)
+    dropIndex (indexName, callback)
+    dropIndexes (callback)
+
+<a name='inherit-query'>
+
+### Query
+
+#### findItems(..., callback)
 
 Equivalent to
 
@@ -294,7 +349,7 @@ Equivalent to
 
 See [Collection.find](https://github.com/christkv/node-mongodb-native/blob/master/lib/mongodb/collection.js#L348)
 
-### findEach(..., callback)
+#### findEach(..., callback)
 
 Equivalent to
 
@@ -304,7 +359,7 @@ Equivalent to
 
 See [Collection.find](https://github.com/christkv/node-mongodb-native/blob/master/lib/mongodb/collection.js#L348)
 
-### findById(id, ..., callback)
+#### findById(id, ..., callback)
 
 Equivalent to
 
@@ -312,15 +367,7 @@ Equivalent to
 
 See [Collection.findOne](https://github.com/christkv/node-mongodb-native/blob/master/lib/mongodb/collection.js#L417)
 
-### updateById(_id, ..., callback)
-
-Equivalent to
-
-    collection.update({_id, ObjectID.createFromHexString(id)}, ..., callback);
-
-See [Collection.update](https://github.com/christkv/node-mongodb-native/blob/master/lib/mongodb/collection.js#L198)
-
-### find(...)
+#### find(...)
 
 If the last parameter is function, it is equivalent to native
 [Collection.find](https://github.com/christkv/node-mongodb-native/blob/master/lib/mongodb/collection.js#L348)
@@ -333,32 +380,122 @@ e.g.
     // future SkinCursor
     db.book.find().toArray(function(err, books){/* do something */});
 
-### all the methods from Collection.prototype
 
-See [Collection](https://github.com/christkv/node-mongodb-native/blob/master/lib/mongodb/collection.js#L45) of node-mongodb-native for more information.
 
-    checkCollectionName
-    count
-    createIndex
-    distinct
-    drop
-    dropIndex
-    dropIndexes
-    ensureIndex
-    find
-    findAndModify
-    findOne
-    group
-    indexInformation
-    insert
-    insertAll
-    mapReduce
-    normalizeHintField
-    options
-    remove
-    rename
-    save
-    update
+#### normalizeHintField(hint)
+
+#### find
+
+    /**
+     * Various argument possibilities
+     * 1 callback
+     * 2 selector, callback,
+     * 2 callback, options  // really?!
+     * 3 selector, fields, callback
+     * 3 selector, options, callback
+     * 4,selector, fields, options, callback
+     * 5 selector, fields, skip, limit, callback
+     * 6 selector, fields, skip, limit, timeout, callback
+     *
+     * Available options:
+     * limit, sort, fields, skip, hint, explain, snapshot, timeout, tailable, batchSize
+     */
+
+#### findAndModify(query, sort, update, options, callback) 
+
+    /**
+      Fetch and update a collection
+      query:        a filter for the query
+      sort:         if multiple docs match, choose the first one in the specified sort order as the object to manipulate
+      update:       an object describing the modifications to the documents selected by the query
+      options:
+        remove:   set to a true to remove the object before returning
+        new:      set to true if you want to return the modified object rather than the original. Ignored for remove.
+        upsert:       true/false (perform upsert operation)
+    **/
+
+#### findOne(queryObject, options, callback)
+
+<a name='inherit-aggregation'>
+
+### Aggregation
+
+#### mapReduce(map, reduce, options, callback)
+
+    e.g.  ```
+      var map = function(){
+          emit(test(this.timestamp.getYear()), 1);
+      }
+      
+      var reduce = function(k, v){
+          count = 0;
+          for(i = 0; i < v.length; i++) {
+              count += v[i];
+          }
+          return count;
+      }
+      collection.mapReduce(map, reduce, {scope:{test:new client.bson_serializer.Code(t.toString())}}, function(err, collection) {
+        collection.find(function(err, cursor) {
+              cursor.toArray(function(err, results) {
+              test.equal(2, results[0].value)
+              finished_test({test_map_reduce_functions_scope:'ok'});            
+          })
+        })
+          ```
+
+#### group(keys, condition, initial, reduce, command, callback)
+
+    e.g.  `collection.group([], {}, {"count":0}, "function (obj, prev) { prev.count++; }", true, function(err, results) {`
+
+#### count(query, callback)
+#### distinct(key, query, callback)
+
+<a name='inherit-inserting'>
+
+### Inserting
+
+#### insert(docs, options, callback)
+
+#### insertAll(docs, options, callback)
+
+<a name='inherit-updating'>
+
+### Updating
+
+#### save(doc, options, callback)
+
+    /**
+      Update a single document in this collection.
+        spec - a associcated array containing the fields that need to be present in
+          the document for the update to succeed
+
+        document - an associated array with the fields to be updated or in the case of
+          a upsert operation the fields to be inserted.
+
+      Options:
+        upsert - true/false (perform upsert operation)
+        multi - true/false (update all documents matching spec)
+        safe - true/false (perform check if the operation failed, required extra call to db)
+    **/
+
+#### update(spec, document, options, callback)
+
+#### updateById(_id, ..., callback)
+
+Equivalent to
+
+    collection.update({_id, ObjectID.createFromHexString(id)}, ..., callback);
+
+See [Collection.update](https://github.com/christkv/node-mongodb-native/blob/master/lib/mongodb/collection.js#L198)
+
+
+<a name='inherit-removing'>
+
+### Removing
+
+#### remove(selector, options, callback)
+
+#### removeById(_id, options, callback)
 
 [Back to index](#index)
 

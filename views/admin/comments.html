@@ -1,5 +1,28 @@
 {# admin_header.html #}
 
+<script type="text/javascript">
+	function delComment(commentId){
+		if(!confirm('你确定删错这条评论吗？')){
+			return;
+		}
+		$.ajax({
+			url: '/admin/comment_del',
+			type: 'post',
+			data: {comment_id: commentId},
+			success: function(r){
+				if(r && r.success){
+					$("#comment_" + commentId).remove();
+				}else{
+					alert('删除出错：' + (r && r.error)||'未知错误');
+				}
+			},
+			error: function(){
+				alert('删除失败');
+			}
+		});
+	}
+</script>
+
 
 	<h4>用户评论列表</h4>
 	<div>
@@ -8,10 +31,11 @@
 		<?js for(var i=0, l=it.vd.comments.length; i<l; i++){
 			 var comment = it.vd.comments[i];
 		?>
-		<li gid="#{comment._id}" class="<?js if(i%2===0){ ?>even<?js } ?>">
-			<span>#{comment.user_name}</span> 发表于 
-			<span><a target="_blank" href="/goods/show/#{comment.goods_id}">#{comment.created_at.format('yyyy-MM-dd hh:mm:ss')}</a></span>：<br/>
-			<div>#{comment.content}</div>
+		<li id="comment_#{comment._id}" cid="#{comment._id}" class="<?js if(i%2===0){ ?>even<?js } ?>">
+			<span>${comment.user.name}</span> 发表于 
+			<span><a target="_blank" href="/products/show/#{comment.product_id}#comments">#{comment.created_at.format('yyyy-MM-dd hh:mm:ss')}</a></span>：
+			[<a href="javascript:delComment('#{comment._id}')">删除</a>]<br/>
+			<div>${comment.content}</div>
 			
 		</li>
 		<?js } ?>
