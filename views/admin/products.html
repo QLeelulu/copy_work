@@ -1,0 +1,90 @@
+{# admin_header.html #}
+
+<script type="text/javascript">
+	function delProduct(productId){
+		if(!confirm('你确定删除这个产品吗？')){
+			return;
+		}
+		$.ajax({
+			url: '/admin/product_del',
+			type: 'post',
+			data: {product_id: productId},
+			success: function(r){
+				if(r && r.success){
+					$("#product_" + productId).remove();
+				}else{
+					alert('删除出错：' + (r && r.error)||'未知错误');
+				}
+			},
+			error: function(){
+				alert('删除失败');
+			}
+		});
+	};
+	
+	function delProductCopy(productId, createdAt){
+		if(!confirm('你确定删除这个山寨产品吗？')){
+			return;
+		}
+		$.ajax({
+			url: '/admin/product_copy_del',
+			type: 'post',
+			data: {product_id: productId, created_at:createdAt},
+			success: function(r){
+				if(r && r.success){
+					$("#copy_" + createdAt).remove();
+				}else{
+					alert('删除出错：' + (r && r.error)||'未知错误');
+				}
+			},
+			error: function(){
+				alert('删除失败');
+			}
+		});
+	};
+</script>
+
+
+	<h4>产品列表</h4>
+	<div>
+	<?js if(it.vd.products && it.vd.products.length){ 
+		 var urlHelper = it.Helper('urlHelper');
+	?>
+	<ul class="product_list">
+		<?js for(var i=0, l=it.vd.products.length; i<l; i++){
+			 var product = it.vd.products[i];
+		?>
+		<li id="product_#{product._id}" pid="#{product._id}" class="<?js if(i%2===0){ ?>even<?js } ?> item">
+			<span>${product.add_by.name}</span> 发表于 
+			<span><a target="_blank" href="/products/show/#{product._id}">#{product.created_at.format('yyyy-MM-dd hh:mm:ss')}</a></span>, 
+			更新于 
+			<span><a target="_blank" href="/products/show/#{product._id}">#{product.updated_at.format('yyyy-MM-dd hh:mm:ss')}</a></span>：
+			[<a href="javascript:delProduct('#{product._id}')">删除</a>]<br/>
+			<div class="original"><p class="title">${product.title}</p></div>
+			<ul class="copys">
+			<?js if(product.copys){ ?>
+				<?js for(var j=0, l2=product.copys.length; j<l2; j++){
+			         var copy = product.copys[j];
+			    ?>
+				<li id="copy_#{copy.created_at.getTime()}">
+				    |<br/>
+					|---
+				    <img class="fico" src="http://www.google.com/s2/favicons?domain=#{urlHelper.getDomain(copy.home_url)}" />
+					<span class="title">${copy.title}</span>
+					[<a href="javascript:delProductCopy('#{product._id}', '#{copy.created_at.getTime()}')">删除山寨产品</a>]
+				</li>
+				<?js } ?>
+			<?js }else{ ?>
+	            <li>
+	                |<br/>
+	                |---暂无山寨
+				</li>
+	        <?js } ?>
+			</ul>
+		</li>
+		<?js } ?>
+	</ul>
+	<?js } ?>
+	</div>
+	
+{# admin_footer.html #}

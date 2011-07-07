@@ -27,7 +27,7 @@
 						<option value="other">其他产品</option>
 					</select>
 				</li>
-                <li><label for="des">介绍:</label><textarea name="des" reg="^.{6,}$" tip="产品的介绍" ></textarea></li>
+                <li><label for="des">介绍:</label><textarea name="des" reg="^[\w\W\s\S]{6,}$" tip="产品的介绍" ></textarea></li>
 				<li><label for="pics">图片:(不支持图片上传，请用外链，每行一个图片url)</label><textarea name="pics" tip="产品的相关图片。不支持图片上传，请贴图片URL，每行一个URL" ></textarea></li>
                 <li><button type="submit" id="btnAdd" class="minibutton green submit">添 加</button></li>
             <ul>

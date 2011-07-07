@@ -256,44 +256,55 @@ em {
 .minibutton.selected{color:#fff;text-shadow:-1px -1px 0 rgba(0,0,0,0.5);border-color:#686868;background:#767676;filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#767676',endColorstr='#9e9e9e');background:-webkit-gradient(linear,left top,left bottom,from(#767676),to(#9e9e9e));background:-moz-linear-gradient(top,#767676,#9e9e9e);}
 .minibutton.follow_control{ padding:5px 20px;}
 
-/* goods list */
-.goodslist li{ border-bottom:dashed 1px #ccc; clear:both; font-size:14px;}
-.goodslist li .goods_img{
-	float:left;
-	padding-bottom:20px;
-	margin-right: 15px;
-	margin-bottom:15px;
-	text-align:center;
-	display:block; padding:2px; border:solid 1px #ddd;
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
-	-webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+/* product_list */
+ul.product_list li.item{
+	margin:10px 0;
+	padding:18px 0;
+	border-bottom:dotted 1px #ccc;
 }
-.goodslist li .goods_img img{
-	width:60px; height:60px;
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
+ul.product_list .original{
 }
-.goodslist li .info p{
-	margin:5px 0;
+ul.product_list .original .title{
+    font-size:16px;
+    display: inline-block;
+    font-weight:bold;
+    height:16px;
+    line-height:16px;
+    margin-bottom: 5px;
 }
-.goodslist .edit a{
-	margin:0 8px;
+ul.product_list .original .title img{
+    width:16px;
+    height:16px;
+    margin-right:3px;
+    vertical-align: top;
 }
-.goodslist .nostocks, .goodslist .not_on_sale, .goodslist .recommend{
-	padding:1px 3px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
+ul.product_list .original .btns{
+    font-size:12px;
+    padding-left:20px;
 }
-.goodslist .nostocks, .goodslist .not_on_sale{
-	background: #87000E;
-	color:#fff;
-	border:solid 1px #ccc;
+ul.product_list .original .btns a{
+    font-size:12px;
+    color:#555;
+    margin-right:8px;
 }
-.goodslist .recommend{
-	background: green;
-	color:#fff;
-	border:solid 1px #ccc;
+ul.product_list .original .btns a img{
+    width:12px;
+    height:12px;
+}
+ul.product_list .copys{
+    color:#aaa;
+}
+ul.product_list .copys *{
+    line-height: 1em;
+    font-size: 14px;
+}
+ul.product_list .copys .fico{
+    height:14px;
+    width:14px;
+    vertical-align: top;
+}
+ul.product_list .copys .title{
+    color:#333;
 }
 
 /* user manager */

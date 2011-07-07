@@ -1,14 +1,14 @@
 {# admin_header.html #}
 
 <script type="text/javascript">
-	function delComment(commentId){
-		if(!confirm('你确定删错这条评论吗？')){
+	function delComment(commentId, productId){
+		if(!confirm('你确定删除这条评论吗？')){
 			return;
 		}
 		$.ajax({
 			url: '/admin/comment_del',
 			type: 'post',
-			data: {comment_id: commentId},
+			data: {comment_id: commentId, product_id: productId},
 			success: function(r){
 				if(r && r.success){
 					$("#comment_" + commentId).remove();
@@ -34,7 +34,7 @@
 		<li id="comment_#{comment._id}" cid="#{comment._id}" class="<?js if(i%2===0){ ?>even<?js } ?>">
 			<span>${comment.user.name}</span> 发表于 
 			<span><a target="_blank" href="/products/show/#{comment.product_id}#comments">#{comment.created_at.format('yyyy-MM-dd hh:mm:ss')}</a></span>：
-			[<a href="javascript:delComment('#{comment._id}')">删除</a>]<br/>
+			[<a href="javascript:delComment('#{comment._id}', '#{comment.product_id}')">删除</a>]<br/>
 			<div>${comment.content}</div>
 			
 		</li>

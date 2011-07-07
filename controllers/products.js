@@ -188,7 +188,7 @@ exports.comment_post = function(fnNext){
                     r.error = '更新数据库失败';
                 }else{
                     r.success = true;
-                    //更新用户的统计信息
+                    //更新评论数
                     productsModel.updateById(product_id,{
                         '$inc': {
                             'comment_count': 1

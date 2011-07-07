@@ -27,6 +27,7 @@ var Goods = db.collection(collectionName);
 db.bind(collectionName, {
     /************
      * 获取产品列表
+     * 按上线时间排序
      */
     getProducts: function(page, pagesize, fn){
         var pagesize = Number(pagesize),
@@ -34,6 +35,19 @@ db.bind(collectionName, {
         page = (isNaN(page) || page < 1) ? 1 : page;
         pagesize = (isNaN(pagesize) || pagesize < 5) ? 5 : pagesize;
         this.find().skip((page-1)*pagesize).limit(pagesize).sort('online_at', -1).toArray(function(err, products){
+            fn && fn(err, products);
+        });
+    }
+    /************
+     * 获取产品列表
+     * 按更新时间排序
+     */
+  , getAdminProducts: function(page, pagesize, fn){
+        var pagesize = Number(pagesize),
+            page = Number(page);
+        page = (isNaN(page) || page < 1) ? 1 : page;
+        pagesize = (isNaN(pagesize) || pagesize < 5) ? 5 : pagesize;
+        this.find().skip((page-1)*pagesize).limit(pagesize).sort('updated_at', -1).toArray(function(err, products){
             fn && fn(err, products);
         });
     }

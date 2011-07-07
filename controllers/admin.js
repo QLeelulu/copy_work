@@ -35,6 +35,7 @@ exports.index = function(fnNext){
 };
 
 _addActions(require('./admin_users'));
+_addActions(require('./admin_products'));
 _addActions(require('./admin_comments'));
 
 function _addActions(actions){
