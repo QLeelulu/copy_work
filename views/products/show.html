@@ -22,7 +22,7 @@
 			<P>
         	    <label>生于:</label> #{product.online_at.getFullYear()}年-#{product.online_at.getMonth()+1}月 <br/>
 			</p>
-			<p>
+			<p class="des">
 			    <label>简介:</label> 
 				<?js if(product.des && product.des.length>140){ ?>
 				<span class="cut">${product.des.slice(0, 140)}</span>
@@ -63,7 +63,7 @@
 					<p>
 						<label>生于:</label> #{copy.online_at.getFullYear()}年-#{copy.online_at.getMonth()+1}月
 					</p>
-					<p>
+					<p class="des">
 						<label>简介:</label> 
 						<?js if(copy.des && copy.des.length>140){ ?>
 		                <span class="cut">${copy.des.slice(0, 140)}</span>

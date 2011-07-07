@@ -397,6 +397,12 @@ ul.product_list .copys .title{
 	width:55px;
     height:55px;
 }
+.product_detail .des{
+	font-size:13px;
+}
+.product_detail .des label{
+	font-size:14px;
+}
 
 /* simple_form */
 .simple_form li{
