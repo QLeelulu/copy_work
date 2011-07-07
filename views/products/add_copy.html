@@ -32,10 +32,12 @@
 		            <p>
 		                <label>简介:</label> 
 		                <?js if(product.des && product.des.length>140){ ?>
-		                ${product.des.slice(0, 140)}<span class="hide">${product.des.slice(140)}</span><a href="javascript:">... 详细&gt;&gt; </a>
-		                <?js }else{ ?>
-		                ${product.des}
-		                <?js } ?>
+						<span class="cut">${product.des.slice(0, 140)}</span>
+						<span class="hide">#{urlHelper.desTextToHtml(product.des)}</span>
+						<a class="show_des_detail" href="javascript:">... 详细&gt;&gt; </a>
+						<?js }else{ ?>
+						#{urlHelper.desTextToHtml(product.des)}
+						<?js } ?>
 		            </p>
 		            <?js if(product.pics && product.pics.length){ ?>
 		            <div class="pics">
@@ -64,10 +66,12 @@
 		                    <p>
 		                        <label>简介:</label> 
 		                        <?js if(copy.des && copy.des.length>140){ ?>
-		                        ${copy.des.slice(0, 140)}<span class="hide">${copy.des.slice(140)}</span><a href="javascript:">... 详细&gt;&gt; </a>
-		                        <?js }else{ ?>
-		                        ${copy.des}
-		                        <?js } ?>
+				                <span class="cut">${copy.des.slice(0, 140)}</span>
+								<span class="hide">#{urlHelper.desTextToHtml(copy.des)}</span>
+								<a class="show_des_detail" href="javascript:">... 详细&gt;&gt; </a>
+				                <?js }else{ ?>
+				                #{urlHelper.desTextToHtml(copy.des)}
+				                <?js } ?>
 		                    </p>
 		                    <?js if(copy.pics && copy.pics.length){ ?>
 		                    <div class="pics">

@@ -32,7 +32,7 @@ exports.desTextToHtml = function(text){
 var URL_RE = new RegExp('(?:\\[url\\s*=\\s*|)((?:www\\.|http[s]?://)[\\w\\.\\?%&\\-/#=;:!\\+~]+)(?:\\](.+)\\[/url\\]|)', 'ig');
 exports.replaceTextUrlToHtml = function(text){
     if(text){
-        return text.replace(URL_RE, this._replaceUrl);
+        return text.replace(URL_RE, _replaceUrl);
     }
     return '';
 };
