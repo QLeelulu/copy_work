@@ -427,6 +427,8 @@ ul.product_list .copys .title{
 
 #comment_list li{
 	margin:10px 0;
+	border-bottom: solid 1px #CCC;
+    padding-bottom: 10px;
 }
 #comment_list li .info{
 	color:#666;
