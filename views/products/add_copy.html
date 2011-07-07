@@ -91,7 +91,20 @@
 		    <script type="text/javascript" src="/static/js/facebox.js"></script>
 		    <script type="text/javascript">
 		        jQuery(document).ready(function($) {
-		            $('.product_detail .pics a').facebox() 
+		            $('.product_detail .pics a').facebox();
+			
+					$(".show_des_detail").click(function(){
+						var _t = $(this);
+						if(_t.html().indexOf('隐藏')>-1){
+							_t.parent().find('.hide').hide();
+							_t.parent().find('.cut').show();
+							_t.html('... 详细&gt;&gt;');
+						}else{
+							_t.parent().find('.cut').hide();
+							_t.parent().find('.hide').show();
+							_t.html('&lt;&lt隐藏详细介绍');
+						}
+					});
 		        });
 		    </script>
 		</div>
