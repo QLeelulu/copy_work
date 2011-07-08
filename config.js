@@ -37,15 +37,19 @@ exports.init = function(){
 	this.route.map(
         'cateRoute',
         '/c/{cate}/',
-        {controller:'home', action:'category'},
-        {id:'\\d+'}
+        {controller:'home', action:'category'}
     );
     
     this.route.map(
         'waitingRoute',
         '/t/waiting/',
-        {controller:'home', action:'nocopy'},
-        {id:'\\d+'}
+        {controller:'home', action:'nocopy'}
+    );
+    
+    this.route.map(
+        'dailyRoute',
+        '/t/daily/',
+        {controller:'home', action:'daily'}
     );
     
     this.route.map(

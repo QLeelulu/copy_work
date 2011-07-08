@@ -1,0 +1,117 @@
+{# ../header.html #}
+
+<link rel="stylesheet" type="text/css" href="/static/css/jquery.lightbox-0.5.css" media="screen" />
+<div style="padding-bottom:15px;">
+	<a class="minibutton blue daily_add" href="<?js if(it.req.user){ ?>javascript:$('#daily_add_form').toggle();<?js }else{ ?>/user/login?return_url=/t/daily<?js } ?>">添加日常产品的山寨产品</a>
+</div>
+
+<?js if(it.req.user){ ?>
+<link rel="stylesheet" type="text/css" href="/static/css/tooltip.css" media="screen" />
+<div id="daily_add_form" style="display:none;">
+        <h3 class="title">提交日常产品的山寨产品</h3>
+        <form id="addForm" class="simple_form" onsubmit="return false;">
+        	<input type="hidden" name="home_url" value="http://shanzhaioff.com" />
+			<input type="hidden" name="online_at" value="2011-7" />
+			<input type="hidden" name="category" value="daily" />
+            <div id="showMsg"></div>
+            <ul>
+                <li><label for="title">名称:</label><input type="text" name="title" reg="^.{2,}$" tip="产品的名称" /></li>
+                <li><label for="des">介绍:</label><textarea name="des" reg="^[\w\W\s\S]{6,}$" tip="产品的介绍" ></textarea></li>
+				<li><label for="pics">图片:(不支持图片上传，请用外链，每行一个图片url)</label><textarea name="pics" tip="产品的相关图片。不支持图片上传，请贴图片URL，每行一个URL" ></textarea></li>
+                <li><button type="submit" id="btnAdd" class="minibutton green submit">添 加</button></li>
+            <ul>
+        </form>
+</div>
+<?js } ?>
+
+
+<?js if(it.vd.products && it.vd.products.length){ 
+     var urlHelper = it.Helper('urlHelper');
+?>
+<ul id="daily_plist" class="daily_plist">
+	<?js for(var i=0, l=it.vd.products.length; i<l; i++){
+         var product = it.vd.products[i];
+    ?>
+    <li class="item">
+    	<p class="title">${product.title}</p>
+		<div class="des">
+			<?js if(product.des && product.des.length>140){ ?>
+			<span class="cut">${product.des.slice(0, 140)}</span>
+			<span class="hide">#{urlHelper.desTextToHtml(product.des)}</span>
+			<a class="show_des_detail" href="javascript:">... 详细&gt;&gt; </a>
+			<?js }else{ ?>
+			#{urlHelper.desTextToHtml(product.des)}
+			<?js } ?>
+		</div>
+		<?js if(product.pics && product.pics.length){ ?>
+		<div class="pics">
+			<?js for(var j=0; j<product.pics.length; j++){ ?>
+			<a href="${product.pics[j]}" title="${product.title}"><img src="${product.pics[j]}"/></a>
+			<?js } ?>
+		</div>
+		<?js } ?>
+		
+		
+    </li>
+    <?js } ?>
+	
+</ul>
+
+<script type="text/javascript" src="/static/js/jquery.masonry.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.lightbox-0.5.min.js"></script>
+<script type="text/javascript">
+
+	$(document).ready(function(){
+		var $container = $('#daily_plist');
+
+		$container.imagesLoaded( function(){
+			$container.masonry({
+		    	itemSelector : '.item'
+			});
+		});
+		
+		$('#daily_plist .pics a').lightBox();
+	});
+
+</script>
+
+<?js }else{ ?>
+	<div class="info">没有任何产品</div>
+<?js } ?>
+        
+        <?js if(it.req.user){ ?>
+        <script type="text/javascript" src="/static/js/tooltip.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                var ttCheck = $('#addForm input[tip], #addForm textarea[tip], #addForm input[reg], #addForm textarea[reg]').tooltip();
+                $("#btnAdd").click(function(){
+                    if(ttCheck.check()){
+                        var postData = {};
+                        $("#addForm :text, #addForm :password, #addForm :hidden, #addForm textarea").each(function(){
+							if($(this).attr('name')) {
+                            	postData[$(this).attr('name')] = $(this).val();
+							}
+                        });
+                        $.post('/products/add', postData, function(r){
+                            if(r.success){
+                                $("#showMsg").html('提交成功，刷新本页面可以看到新加的山寨产品');
+								$("#addForm")[0].reset();
+                            }else{
+                                var err = r.error;
+                                if(typeof err !== 'string'){
+                                    err = '';
+                                    for(var k in r.error){
+                                        err += r.error[k] + '\r\n';
+                                    }
+                                }
+                                alert(err);
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
+		<?js } ?>
+
+
+{# ../footer.html #}

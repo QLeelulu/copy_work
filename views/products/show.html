@@ -158,6 +158,7 @@
                         if(r.success){
                             $("#showMsg").html('评论成功');
                             $("#txtComment").val('');
+							getComments();
                         }else{
                             var err = r.error;
                             if(typeof err !== 'string'){

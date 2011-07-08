@@ -434,3 +434,35 @@ ul.product_list .copys .title{
 	color:#666;
 }
 
+/* daily_plist */
+.daily_plist li{
+	float:left;
+	margin:15px;
+}
+.daily_plist li .title{
+	font-size:16px;
+	font-weight:bold;
+	border-bottom:dotted 1px #ccc;
+}
+.daily_plist li .des{
+	color:#333;
+	margin:5px 0;
+}
+.daily_plist li .pics img{
+	width: 280px;
+	border: 5px solid #ddd;
+	opacity: 0.9;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+.daily_plist li .pics a:hover img {
+    border: 5px solid #aaa;
+    opacity:1;
+}
+
+.daily_add{
+	font-size:14px;
+	padding:8px;
+	margin-bottom:10px;
+}
+
