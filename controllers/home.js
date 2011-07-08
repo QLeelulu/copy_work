@@ -71,19 +71,19 @@ exports.daily = function(fnNext){
 
 exports.nocopy = function(fnNext){
     var _t = this,
-        r = {},
-        pagesize = 50,
-        page = this.req.get.page || 1;
+        r = {};
         
     var combo = new Combo(function(){
         fnNext( _t.ar.view(r, 'home/index.html') );
     });
     
     combo.add();
-    productsModel.getNoCopyProducts(page, pagesize, function(err, products){
-        r.products = products;
-        combo.finishOne();
-    });
+    productsModel.find({'category':'internet', $or:[ {'copys' : { $size: 1 }}, {'copys':{$exists : false}} ] })
+	    .sort('online_at', -1)
+	    .toArray(function(err, products){
+	        r.products = products;
+        	combo.finishOne();
+	    });
     
 };
 
