@@ -114,7 +114,6 @@ em {
 .error{color:red;}
 .hide{display:none;}
 #container {
-	margin: 10px;
 	width:960px;
 	margin:0 auto;
 }
@@ -466,3 +465,7 @@ ul.product_list .copys .title{
 	margin-bottom:10px;
 }
 
+#googleAd{
+	float:right;
+	width:520px;
+}
