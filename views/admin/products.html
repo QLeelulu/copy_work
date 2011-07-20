@@ -59,7 +59,8 @@
 			<span><a target="_blank" href="/products/show/#{product._id}">#{product.created_at.format('yyyy-MM-dd hh:mm:ss')}</a></span>, 
 			更新于 
 			<span><a target="_blank" href="/products/show/#{product._id}">#{product.updated_at.format('yyyy-MM-dd hh:mm:ss')}</a></span>：
-			[<a href="javascript:delProduct('#{product._id}')">删除</a>]<br/>
+			[<a href="javascript:delProduct('#{product._id}')">删除</a>]&nbsp;&nbsp;&nbsp;&nbsp;
+			[<a href="/products/edit/#{product._id}" target="_blank">编辑</a>]<br/>
 			<div class="original"><p class="title">${product.title}</p></div>
 			<ul class="copys">
 			<?js if(product.copys){ ?>

@@ -32,7 +32,7 @@ exports.add = function(fnNext){
 exports.add.filters = [userAuthFilter];
 
 /************
- * 添加原创产品并保存到数据库
+ * 添加(或编辑)原创产品并保存到数据库
  */
 exports.add_post = function(fnNext){
     var r = {}, 
@@ -43,6 +43,7 @@ exports.add_post = function(fnNext){
         r.error = product.validErrors;
         return fnNext( this.ar.raw(JSON.stringify(r), 'text/html;charset=UTF-8') );
     }
+
     product = product.fieldDatas();
     if(product.online_at){
         product.online_at = new Date(product.online_at);
@@ -68,20 +69,51 @@ exports.add_post = function(fnNext){
         product.pics = [];
     }
     var now = new Date();
-    product.created_at = product.updated_at = now;
-    productsModel.insert(product, {safe:true}, function(err, _product){
-        if(!err && _product && _product.length){
-            r.success = true;
-            r.product = _product[0];
-        }else{
-            err && console.log(err);
-            r.error = '插入数据失败';
-        }
-        fnNext( _t.ar.json(r) );
-    });
+    product.updated_at = now;
+    if(_t.req.post.edit_id){
+    	var history = {type:'edit', user:_t.req.user, process_at: new Date()};
+    	productsModel.updateById(_t.req.post.edit_id, {'$set': product, '$push':{updated_historys: history} }, {safe:true}, 
+            function(err, count){
+                if(err || !count){
+                    r.error = '更新数据库失败';
+                }else{
+                    r.success = true;
+                    r.goods = count;
+                }
+                fnNext( _t.ar.json(r) );
+            }
+        );
+    }else{
+    	product.created_at = now;
+	    productsModel.insert(product, {safe:true}, function(err, _product){
+	        if(!err && _product && _product.length){
+	            r.success = true;
+	            r.product = _product[0];
+	        }else{
+	            err && console.log(err);
+	            r.error = '插入数据失败';
+	        }
+	        fnNext( _t.ar.json(r) );
+	    });
+    }
 };
 exports.add_post.filters = [userAuthFilter];
 
+/************
+ * 显示编辑原创产品页面
+ */
+exports.edit = function(fnNext){
+    var _t = this, 
+        pid = this.routeData.args.param || '';
+    productsModel.findById(pid, function(err, product){
+    	var r = {is_edit:true}
+    	if(_t.req.user.isAdmin || _t.req.user.email===product.add_by.email){
+    		r.product = product;
+    	}
+        fnNext( _t.ar.view(r, 'products/add.html') );
+    });
+};
+exports.edit.filters = [userAuthFilter];
 
 /************
  * 显示添加山寨产品页面
